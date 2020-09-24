@@ -10,6 +10,7 @@ class SubCategory extends Model
         'name', 'category_id', 'seller_id'
     ];
 
+    protected $table = 'subcategories';
 
     public function category()
     {

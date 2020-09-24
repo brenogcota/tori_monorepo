@@ -14,8 +14,6 @@ class OrderItems extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('order_id');
             $table->integer('quantity');
-            $table->timestamp('date');
-            $table->string('code');
             $table->double('partial_value', 10, 2);
             $table->double('unitary_value', 10, 2);
             $table->timestamps();

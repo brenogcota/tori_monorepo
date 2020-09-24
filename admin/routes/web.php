@@ -31,8 +31,6 @@ Route::get('seller/resendmail', 'Mail\VerifyEmailController@resendMail')->name('
 Route::get('/logout', 'AuthController@logout')->name('logout');
 
 
-
-
 Route::group(['middleware' => ['auth2']], function () {
 
     Route::get('/', 'Admin\HomeController@index');
@@ -69,6 +67,16 @@ Route::group(['middleware' => ['auth2']], function () {
         Route::get('/upgrade/{id}', 'CategoryController@upgrade')->name('upgrade');
         Route::post('/update/{id}', 'CategoryController@update')->name('update');
         Route::get('/delete/{id}', 'CategoryController@destroy')->name('delete');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sub Category routes
+    |--------------------------------------------------------------------------|
+    */ 
+
+    Route::group(['prefix'=>'/subcategoria','as'=>'categoria.'], function(){
+        Route::get('/', 'SubCategoryController@index');
     });
 
 

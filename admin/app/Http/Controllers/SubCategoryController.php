@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Repository\CategoryRepository;
-use App\Http\Requests\CategoryRequest;
+use App\Models\SubCategory;
+use App\Http\Requests\SubCategoryRequest;
 use App\Exceptions\Handler;
 
 use Illuminate\Http\Response;
@@ -11,42 +11,70 @@ use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 
-class CategoryController extends Controller
+class SubCategoryController extends Controller
 {
 
-    private $repository;
+    private $subcategory;
 
-    public function __construct(CategoryRepository $category)
+    public function __construct(SubCategory $subcategory)
     {
-        $this->repository = $category;
+        $this->subcategory = $subcategory;
     }
 
     public function index(Request $request) {
         
-        $categories = $this->repository->index();
+        try{
 
-        return response()->json($categories, 200); 
+            $subcategories = $this->subcategory->all();
+
+            return $subcategories; 
+        } 
+        catch(Throwable $e) {
+            return redirect()
+                            ->back()
+                            ->with('message', 'Category not created')
+                            ->withInput();
+        }
+        catch (QueryException $e) {
+            return redirect()
+                            ->back()
+                            ->with('message', 'Query error')
+                            ->withInput();
+        }
+        catch (FatalErrorException $e) {
+            return redirect()
+                            ->back()
+                            ->with('message', 'Fatal error')
+                            ->withInput();
+        }
+
     }
 
+    public function create()
+    {
+        return view('admin.pages.category.create');
+    }
 
-   /* public function store(CategoryRequest $request)
+    public function store(SubCategoryRequest $request)
     {
         
-        $category = $this->repository;
+        $subcategory = $this->subcategory;
 
         try {
 
             $data = [
                 'name' => $request->name,
-                'token' => $request->cookie('token'),
-                'image' => $request->image,
+                'category_id' => $request->category_id,
             ];          
 
-            $category->store($data);
+            $subcategory->name = $request->name;
+            $subcategory->category_id = $request->category_id;     
+
+            $subcategory->save();
 
             return redirect()
                     ->back()
-                    ->with('message', 'Categoria criada')
+                    ->with('message', 'Sub Categoria criada')
                     ->withInput();
             
         }
@@ -71,40 +99,51 @@ class CategoryController extends Controller
     }
 
     public function show($id) {
-        $category = $this->repository->show($id);
+        $subcategory = $this->subcategory->find($id);
 
         return view('admin.pages.category.show', [
-            'category' => $category
+            'category' => $subcategory
         ]);
     }
 
     public function upgrade($id)
     {
-        $category = $this->repository->upgrade($id);
+        $subcategory = $this->subcategory->find($id);
+
+        if(!$subcategory) {
+            return redirect()
+                    ->back()
+                    ->with('message', 'Categoria não encontrada')
+                    ->withInput();
+        }
 
         return view('admin.pages.category.upgrade', [
-            'category' => $category
+            'category' => $subcategory
         ]);
     }
 
     public function update(Request $request, $id)
     {
 
-        $category = $this->repository;
 
         $request->validate([
-            'image' => 'nullable|mimes:jpeg,jpg,png',
             'name' => 'required|max:255',
         ]);
 
+        $subcategory = $this->subcategory->find($id);
+
+        if(!$subcategory) {
+            return redirect()
+                    ->back()
+                    ->with('message', 'Categoria não encontrada')
+                    ->withInput();
+        }
+
         try {
 
-            $data = [
-                'name' => $request->name,
-                'image' => $request->image
-            ];
+            $subcategory->name = $request->name; 
 
-            $category->update($data, $id);
+            $subcategory->save();
 
             return redirect()
                     ->back()
@@ -136,7 +175,9 @@ class CategoryController extends Controller
     public function destroy($id) {
         try {
 
-            $this->repository->destroy($id);
+            $subcategory = $this->subcategory->find($id);
+
+            $subcategory->delete();
             
             return redirect()
                     ->back()
@@ -163,5 +204,5 @@ class CategoryController extends Controller
                             ->withInput();
         }
     }
-    */
+    
 }
