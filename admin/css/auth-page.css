@@ -1,0 +1,139 @@
+:root {
+    --font-color: #222;
+    --link: rgb(51, 102, 243);
+    --bg-light: #eee;
+    --bg-red: rgb(226, 28, 28);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    outline: none;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+    color: var(--font-color);
+}
+
+html {
+    font-size: 52%;
+}
+
+body {
+    font-size: 2.2rem;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #fff;
+}
+
+main {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    height: 100vh;
+}
+
+input {
+    padding: 10px;
+    margin: 10px 0;
+    background: #fff;
+    border-radius: 6px;
+    width: 100%;
+    border: 1px solid var(--font-color);
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    height: auto;
+    background: var(--bg-red);
+    color: var(--bg-light);
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+button:hover {
+    opacity: 0.8;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+
+a {
+    font-size: 14px;
+    color: var(--font-color);
+    text-align: end;
+    margin: 10px 0;
+}
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.bg-form {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-form > a {
+    position: absolute;
+    bottom: 20px;
+    font-size: 2rem;
+    color: var(--font-color);
+}
+
+.auth-form {
+    text-align: center;
+    background: #fff;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.auth-form > form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 30%;
+    padding: 10px;
+    text-align: center;
+}
+
+.auth-form > img {
+    width: 10vh;
+}
+
+.bg-img {
+    background-image: url("../assets/images/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.alert > p {
+    color: #fff !important;
+}
+
+.alert-danger {
+    background: var(--bg-red);
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 6px;
+    max-width: 400px;
+    position: absolute;
+    top: 10px;
+}
+  
+
+@media (max-width: 800px) {
+    main {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .bg-img {
+        display: none;
+    }
+}
