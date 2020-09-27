@@ -29,6 +29,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     
     // Category routes
     $router->get('categories', 'CategoryController@index');
+
+    // Orders routes
+    $router->get('orders', 'OrderController@index');
+    $router->get('orders/create', 'OrderController@store');
     
 });
 

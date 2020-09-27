@@ -28,7 +28,7 @@ class ProductController extends Controller
         return response()->json($products, 200); 
     }
 
-    public function create(Request $request)
+    /*public function create(Request $request)
     {
         $token = $request->cookie('token');
     
@@ -181,5 +181,5 @@ class ProductController extends Controller
                             ->with('message', 'Fatal error')
                             ->withInput();
         }
-    }
+    } */
 }
