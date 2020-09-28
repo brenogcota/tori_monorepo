@@ -27,15 +27,25 @@ class OrderItemsController extends Controller {
         $this->User = $user;
     }
 
-    public function index() {
+    public function index(Request $request) {
 
-        $ordersItems = DB::table('orders')
-                        ->join('sellers', 'sellers.id', '=', 'categories.seller_id')
-                        ->select('sellers.company_name as seller_name', 'categories.name', 'categories.image', 'categories.id')
-                        ->orderBy('categories.created_at', 'desc')
+        $token = $request->header('Authorization');
+
+        if(!$token) {
+            return response()->json(['message' => 'Invalid token' ], 404); 
+        }
+
+        $user = $this->User->where('api_token', $token)->first();
+
+        $orderItems = DB::table('order_items')
+                        ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                        ->join('products', 'products.id', '=', 'order_items.product_id')
+                        ->select('orders.id as id_order', 'products.*', 'order_items.created_at', 'order_items.id as id_orderitems')
+                        ->where('orders.user_id', $user->id)
+                        ->orderBy('order_items.created_at', 'desc')
                         ->paginate(15);
 
-        return response()->json($orders, 200);
+        return response()->json($orderItems, 200);
     }
 
     /*public function store(Request $request) {

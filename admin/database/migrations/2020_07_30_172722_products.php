@@ -29,6 +29,11 @@ class Products extends Migration
                             ->references('id')
                             ->on('categories')
                             ->onUpdate('cascade');
+
+            $table->foreign('subcategory_id')
+                            ->references('id')
+                            ->on('subcategories')
+                            ->onUpdate('cascade');
         });
     }
 

@@ -33,6 +33,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     // Orders routes
     $router->get('orders', 'OrderController@index');
     $router->get('orders/create', 'OrderController@store');
+
+    // Order Items routes
+    $router->get('orderitems', 'OrderItemsController@index');
     
 });
 

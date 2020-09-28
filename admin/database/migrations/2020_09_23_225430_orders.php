@@ -16,10 +16,16 @@ class Orders extends Migration
 
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamp('date');
+            $table->unsignedBigInteger('user_id');
+            $table->string('date');
             $table->string('code');
             $table->double('total_value', 10, 2);
             $table->timestamps();
+
+            $table->foreign('user_id')
+                            ->references('id')
+                            ->on('users')
+                            ->onUpdate('cascade');
         });
     }
 
