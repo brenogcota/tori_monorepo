@@ -27,6 +27,7 @@
             <a href="{{ route('home')}}"><div class="bg bg-light-purple"><img src="{{ asset('assets/icons/homewhite.svg') }}" alt=""></div> <small>Home</small></a>
             <a href="{{ route('lojista.index')}}"><div class="bg bg-light-blue"><img src="{{ asset('assets/icons/group65.svg') }}" alt=""></div> <small>Lojistas</small></a>
             <a href="{{ route('categoria.index')}}"><div class="bg bg-purple"><img src="{{ asset('assets/icons/group68.svg') }}" alt=""></div> <small>Categorias</small></a>
+            <a href="{{ route('subcategoria.index')}}"><div class="bg bg-dark-blue"><img src="{{ asset('assets/icons/group68.svg') }}" alt=""></div> <small>Sub Categorias</small></a>
             <a href="{{ route('produto.index')}}"><div class="bg bg-light-green"><img src="{{ asset('assets/icons/group69.svg') }}" alt=""></div> <small>Produtos</small></a>
             <a href="{{ route('usuario.index')}}"><div class="bg bg-light-orange"><img src="{{ asset('assets/icons/group65.svg') }}" alt=""></div> <small>Usuarios</small></a>
             <a><div class="bg bg-light-red" id="myBtn" class="logout"><img src="{{ asset('assets/icons/group64.svg') }}" alt=""></div> <small>Sair</small></a>

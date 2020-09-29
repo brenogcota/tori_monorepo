@@ -3,36 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Models\SubCategory;
+use App\Models\Category;
 use App\Http\Requests\SubCategoryRequest;
 use App\Exceptions\Handler;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 
 class SubCategoryController extends Controller
 {
 
-    private $subcategory;
+    private $Subcategory;
+    private $Category;
 
-    public function __construct(SubCategory $subcategory)
+    public function __construct(SubCategory $subcategory, Category $category)
     {
-        $this->subcategory = $subcategory;
+        $this->Subcategory = $subcategory;
+        $this->Category = $category;
     }
 
     public function index(Request $request) {
         
         try{
 
-            $subcategories = $this->subcategory->all();
+            $token = $request->cookie('token');
 
-            return $subcategories; 
+            $subcategories = DB::table('subcategories')
+                                    ->join('categories', 'categories.id', '=', 'subcategories.category_id')
+                                    ->join('sellers', 'sellers.id', '=', 'categories.seller_id')
+                                    ->select('categories.name as category_name', 'subcategories.name')
+                                    ->where('sellers.api_token', $token)
+                                    ->orderBy('subcategories.created_at', 'desc')
+                                    ->paginate(15);
+
+            return view('admin.pages.subcategory.index', [
+                'subcategories' => $subcategories
+            ]);
         } 
         catch(Throwable $e) {
             return redirect()
                             ->back()
-                            ->with('message', 'Category not created')
+                            ->with('message', 'Sub Category not created')
                             ->withInput();
         }
         catch (QueryException $e) {
@@ -50,22 +64,28 @@ class SubCategoryController extends Controller
 
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.pages.category.create');
+        $token = $request->cookie('token');
+
+        $categories =  DB::table('categories')
+                            ->join('sellers', 'sellers.id', '=', 'categories.seller_id')
+                            ->where('sellers.api_token', $token)
+                            ->orderBy('categories.created_at', 'desc')
+                            ->paginate(15);
+
+        return view('admin.pages.subcategory.create', [
+            'categories' => $categories
+        ]);
     }
 
     public function store(SubCategoryRequest $request)
     {
         
-        $subcategory = $this->subcategory;
+        $subcategory = $this->Subcategory;
 
         try {
-
-            $data = [
-                'name' => $request->name,
-                'category_id' => $request->category_id,
-            ];          
+         
 
             $subcategory->name = $request->name;
             $subcategory->category_id = $request->category_id;     
@@ -74,14 +94,14 @@ class SubCategoryController extends Controller
 
             return redirect()
                     ->back()
-                    ->with('message', 'Sub Categoria criada')
+                    ->with('message', 'Sub Sub Categoria criada')
                     ->withInput();
             
         }
         catch(Throwable $e) {
             return redirect()
                             ->back()
-                            ->with('message', 'Category not created')
+                            ->with('message', 'Sub Category not created')
                             ->withInput();
         }
         catch (QueryException $e) {
@@ -99,43 +119,43 @@ class SubCategoryController extends Controller
     }
 
     public function show($id) {
-        $subcategory = $this->subcategory->find($id);
 
-        return view('admin.pages.category.show', [
-            'category' => $subcategory
+        $subcategory = $this->Subcategory->find($id);
+        
+        return view('admin.pages.subcategory.show', [
+            'subcategory' => $subcategory
         ]);
     }
 
-    public function upgrade($id)
+    public function upgrade(Request $request, $id)
     {
-        $subcategory = $this->subcategory->find($id);
+        $token = $request->cookie('token');
+        $subcategory = $this->Subcategory->find($id);
+
+        $categories = DB::table('subcategories')
+                            ->join('categories', 'categories.id', '=', 'subcategories.category_id')
+                            ->join('sellers', 'sellers.id', '=', 'categories.seller_id')
+                            ->select('categories.name as category_name', 'categories.id as category_id', 'subcategories.name', 'subcategories.id')
+                            ->where('sellers.api_token', $token)
+                            ->orderBy('subcategories.created_at', 'desc')
+                            ->paginate(15);
+
+
+        return view('admin.pages.subcategory.upgrade', [
+            'categories' => $categories,
+            'subcategory' => $subcategory
+        ]);
+    }
+
+    public function update(SubCategoryRequest $request, $id)
+    {
+
+        $subcategory = $this->Subcategory->find($id);
 
         if(!$subcategory) {
             return redirect()
                     ->back()
-                    ->with('message', 'Categoria não encontrada')
-                    ->withInput();
-        }
-
-        return view('admin.pages.category.upgrade', [
-            'category' => $subcategory
-        ]);
-    }
-
-    public function update(Request $request, $id)
-    {
-
-
-        $request->validate([
-            'name' => 'required|max:255',
-        ]);
-
-        $subcategory = $this->subcategory->find($id);
-
-        if(!$subcategory) {
-            return redirect()
-                    ->back()
-                    ->with('message', 'Categoria não encontrada')
+                    ->with('message', 'Sub Categoria não encontrada')
                     ->withInput();
         }
 
@@ -147,7 +167,7 @@ class SubCategoryController extends Controller
 
             return redirect()
                     ->back()
-                    ->with('message', 'Categoria atualizada')
+                    ->with('message', 'Sub Categoria atualizada')
                     ->withInput();
 
            
@@ -155,7 +175,7 @@ class SubCategoryController extends Controller
         catch(Throwable $e) {
             return redirect()
                             ->back()
-                            ->with('message', 'Category not created')
+                            ->with('message', 'Sub Category not created')
                             ->withInput();
         }
         catch (QueryException $e) {
@@ -175,20 +195,20 @@ class SubCategoryController extends Controller
     public function destroy($id) {
         try {
 
-            $subcategory = $this->subcategory->find($id);
+            $subcategory = $this->Subcategory->find($id);
 
             $subcategory->delete();
             
             return redirect()
                     ->back()
-                    ->with('message', 'Categoria removida')
+                    ->with('message', 'Sub Categoria removida')
                     ->withInput();
                     
         }
         catch(Throwable $e) {
             return redirect()
                             ->back()
-                            ->with('message', 'Category not removed')
+                            ->with('message', 'Sub Category not removed')
                             ->withInput();
         }
         catch (QueryException $e) {

@@ -73,10 +73,16 @@ Route::group(['middleware' => ['auth2']], function () {
     |--------------------------------------------------------------------------
     | Sub Category routes
     |--------------------------------------------------------------------------|
-    */ 
+    */
 
-    Route::group(['prefix'=>'/subcategoria','as'=>'categoria.'], function(){
-        Route::get('/', 'SubCategoryController@index');
+    Route::group(['prefix'=>'/subcategoria','as'=>'subcategoria.'], function(){
+        Route::get('/', 'SubCategoryController@index')->name('index');
+        Route::get('/create', 'SubCategoryController@create')->name('create');
+        Route::post('/store', 'SubCategoryController@store')->name('store');
+        Route::get('/show/{id}', 'SubCategoryController@show')->name('show');
+        Route::get('/upgrade/{id}', 'SubCategoryController@upgrade')->name('upgrade');
+        Route::post('/update/{id}', 'SubCategoryController@update')->name('update');
+        Route::get('/delete/{id}', 'SubCategoryController@destroy')->name('delete');
     });
 
 
